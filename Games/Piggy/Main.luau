@@ -327,3 +327,7 @@ end)
 Options.PiggyESPColor:OnChanged(function(Value)
 	for _, Object in Objects.Piggy do Abysall.ESPLibrary:UpdateObjectColor(Object, Value) end
 end)
+
+
+Abysall.Interface.ApplySettingsTab(Window)
+Functions.Notify({ Title = "Successfully loaded in " .. math.floor((tick() - LoadStart) * 1000) / 1000 .. " seconds." , Body = "Press '" .. tostring(Options.MenuKeybind.Value) .. "' to toggle the UI."})
