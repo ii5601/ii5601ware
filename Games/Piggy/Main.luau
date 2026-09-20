@@ -26,6 +26,8 @@ local Groupboxes = {}
 local Globals = {}
 local Connections = {}
 local Functions = {}
+local Objects = {}
+Objects.Piggy = {}
 
 local LocalPlayer = Services.Players.LocalPlayer
 
