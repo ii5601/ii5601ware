@@ -28,7 +28,6 @@ local Connections = {}
 local Functions = {}
 
 local LocalPlayer = Services.Players.LocalPlayer
-local RemotesFolder = Services.ReplicatedStorage:WaitForChild("RemotesFolder")
 
 while not LocalPlayer.Character do
     task.wait()
@@ -46,7 +45,7 @@ local Window = Library:CreateWindow({
 	MenuFadeTime = 0,
     CornerRadius = 2,
 })
-
+print("Window loaded!")
 Abysall.Interface.ApplyInfoTab(Window)
 local Tabs = {
     General = Window:AddTab("General", "house"),
@@ -327,7 +326,7 @@ end)
 Options.PiggyESPColor:OnChanged(function(Value)
 	for _, Object in Objects.Piggy do Abysall.ESPLibrary:UpdateObjectColor(Object, Value) end
 end)
-
+print("ESP loaded!")
 
 Abysall.Interface.ApplySettingsTab(Window)
 Functions.Notify({ Title = "Successfully loaded in " .. math.floor((tick() - LoadStart) * 1000) / 1000 .. " seconds." , Body = "Press '" .. tostring(Options.MenuKeybind.Value) .. "' to toggle the UI."})
