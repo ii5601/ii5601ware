@@ -27,7 +27,7 @@ local Globals = {}
 local Connections = {}
 local Functions = {}
 local Objects = {}
-Objects.Piggy = {}
+local ObjectsPiggy = {}
 
 local LocalPlayer = Services.Players.LocalPlayer
 
@@ -289,22 +289,22 @@ local function AddPiggy(Object)
 		return
 	end
 
-	if table.find(Objects.Piggy, Object) then
+	if table.find(ObjectsPiggy, Object) then
 		return
 	end
 
-	table.insert(Objects.Piggy, Object)
+	table.insert(ObjectsPiggy, Object)
 	UpdatePiggyESP(Object)
 end
 
 local function RemovePiggy(Object)
-	local Index = table.find(Objects.Piggy, Object)
+	local Index = table.find(ObjectsPiggy, Object)
 	if not Index then
 		return
 	end
 
 	Functions.RemoveESP(Object)
-	table.remove(Objects.Piggy, Index)
+	table.remove(ObjectsPiggy, Index)
 end
 
 for _, Object in Workspace:GetDescendants() do
@@ -320,13 +320,13 @@ Workspace.DescendantRemoving:Connect(function(Object)
 end)
 
 Toggles.PiggyESPToggle:OnChanged(function()
-	for _, Object in Objects.Piggy do
+	for _, Object in ObjectsPiggy do
 		UpdatePiggyESP(Object)
 	end
 end)
 
 Options.PiggyESPColor:OnChanged(function(Value)
-	for _, Object in Objects.Piggy do Abysall.ESPLibrary:UpdateObjectColor(Object, Value) end
+	for _, Object in ObjectsPiggy do Abysall.ESPLibrary:UpdateObjectColor(Object, Value) end
 end)
 print("ESP loaded!")
 
