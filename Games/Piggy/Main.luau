@@ -274,13 +274,13 @@ Groupboxes.Visuals_ESP_Toggles:AddToggle("PiggyESPToggle", {
 
 local function UpdatePiggyESP(Object)
 	if Toggles.PiggyESPToggle.Value then
-		Functions.AddESP({
+		Abysall.ESPLibrary:AddESP({
 			Object = Object,
 			Text = "Piggy",
-			Color = Options.EntityESPColor.Value
+			Color = Options.PiggyESPColor.Value
 		})
 	else
-		Functions.RemoveESP(Object)
+		Abysall.ESPLibrary:RemoveESP(Object)
 	end
 end
 
@@ -303,7 +303,7 @@ local function RemovePiggy(Object)
 		return
 	end
 
-	Functions.RemoveESP(Object)
+	Abysall.ESPLibrary:RemoveESP(Object)
 	table.remove(ObjectsPiggy, Index)
 end
 
@@ -326,9 +326,7 @@ Toggles.PiggyESPToggle:OnChanged(function()
 end)
 
 Options.PiggyESPColor:OnChanged(function(Value)
-	for _, Object in ObjectsPiggy do Abysall.ESPLibrary:UpdateObjectColor(Object, Value) end
+	for _, Object in ObjectsPiggy do
+		Abysall.ESPLibrary:UpdateObjectColor(Object, Value)
+	end
 end)
-print("ESP loaded!")
-
-Abysall.Interface.ApplySettingsTab(Window)
-Functions.Notify({ Title = "Successfully loaded in " .. math.floor((tick() - LoadStart) * 1000) / 1000 .. " seconds." , Body = "Press '" .. tostring(Options.MenuKeybind.Value) .. "' to toggle the UI."})
