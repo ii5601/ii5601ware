@@ -28,6 +28,8 @@ local Connections = {}
 local Functions = {}
 local Objects = {}
 local ObjectsPiggy = {}
+local PiggyFolder = Workspace:WaitForChild("PiggyNPC")
+local ObjectsPiggy = {}
 
 local LocalPlayer = Services.Players.LocalPlayer
 
@@ -272,6 +274,7 @@ Groupboxes.Visuals_ESP_Toggles:AddToggle("PiggyESPToggle", {
     Transparency = 0
 })
 
+
 local function UpdatePiggyESP(Object)
 	if Toggles.PiggyESPToggle.Value then
 		Abysall.ESPLibrary:AddESP({
@@ -285,7 +288,11 @@ local function UpdatePiggyESP(Object)
 end
 
 local function AddPiggy(Object)
-	if Object.Name ~= "PiggyNPC" then
+	if not Object:IsDescendantOf(PiggyFolder) then
+		return
+	end
+
+	if not Object:IsA("BasePart") and not Object:IsA("Model") then
 		return
 	end
 
@@ -307,15 +314,15 @@ local function RemovePiggy(Object)
 	table.remove(ObjectsPiggy, Index)
 end
 
-for _, Object in Workspace:GetDescendants() do
+for _, Object in PiggyFolder:GetDescendants() do
 	AddPiggy(Object)
 end
 
-Workspace.DescendantAdded:Connect(function(Object)
+PiggyFolder.DescendantAdded:Connect(function(Object)
 	AddPiggy(Object)
 end)
 
-Workspace.DescendantRemoving:Connect(function(Object)
+PiggyFolder.DescendantRemoving:Connect(function(Object)
 	RemovePiggy(Object)
 end)
 
@@ -330,3 +337,6 @@ Options.PiggyESPColor:OnChanged(function(Value)
 		Abysall.ESPLibrary:UpdateObjectColor(Object, Value)
 	end
 end)
+
+Abysall.Interface.ApplySettingsTab(Window)
+Functions.Notify({ Title = "Successfully loaded in " .. math.floor((tick() - LoadStart) * 1000) / 1000 .. " seconds." , Body = "Press '" .. tostring(Options.MenuKeybind.Value) .. "' to toggle the UI."})
