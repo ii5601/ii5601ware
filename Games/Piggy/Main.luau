@@ -28,9 +28,11 @@ local Connections = {}
 local Functions = {}
 local Objects = {}
 local ObjectsPiggy = {}
-local PiggyFolder = Workspace:WaitForChild("PiggyNPC")
-local ObjectsPiggy = {}
+local ObjectsPlayers = {}
+local PlayerConnections = {}
 
+local PiggyFolder = Workspace:WaitForChild("PiggyNPC")
+local Players = game:GetService("Players")
 local LocalPlayer = Services.Players.LocalPlayer
 
 while not LocalPlayer.Character do
@@ -274,6 +276,15 @@ Groupboxes.Visuals_ESP_Toggles:AddToggle("PiggyESPToggle", {
     Transparency = 0
 })
 
+Groupboxes.Visuals_ESP_Toggles:AddToggle("PlayerESPToggle", {
+	Text = "Players",
+	Default = false,
+	Tooltip = "Highlights other players."
+}):AddColorPicker("PlayerESPColor", {
+	Text = "Players",
+	Default = Color3.fromRGB(255, 255, 255),
+	Transparency = 0
+})
 
 local function UpdatePiggyESP(Object)
 	if Toggles.PiggyESPToggle.Value then
@@ -288,11 +299,7 @@ local function UpdatePiggyESP(Object)
 end
 
 local function AddPiggy(Object)
-	if not Object:IsDescendantOf(PiggyFolder) then
-		return
-	end
-
-	if not Object:IsA("BasePart") and not Object:IsA("Model") then
+	if not Object:IsA("Model") then
 		return
 	end
 
@@ -314,17 +321,12 @@ local function RemovePiggy(Object)
 	table.remove(ObjectsPiggy, Index)
 end
 
-for _, Object in PiggyFolder:GetDescendants() do
+for _, Object in PiggyFolder:GetChildren() do
 	AddPiggy(Object)
 end
 
-PiggyFolder.DescendantAdded:Connect(function(Object)
-	AddPiggy(Object)
-end)
-
-PiggyFolder.DescendantRemoving:Connect(function(Object)
-	RemovePiggy(Object)
-end)
+PiggyFolder.ChildAdded:Connect(AddPiggy)
+PiggyFolder.ChildRemoved:Connect(RemovePiggy)
 
 Toggles.PiggyESPToggle:OnChanged(function()
 	for _, Object in ObjectsPiggy do
@@ -335,6 +337,123 @@ end)
 Options.PiggyESPColor:OnChanged(function(Value)
 	for _, Object in ObjectsPiggy do
 		Abysall.ESPLibrary:UpdateObjectColor(Object, Value)
+	end
+end)
+
+local function IsPlayerAlive(Character)
+	return Character
+		and Character.Parent
+		and Character:FindFirstChild("Energy") ~= nil
+		and Character:FindFirstChild("Ghost") == nil
+end
+
+local function UpdatePlayerESP(Player, Character)
+	if not Character then
+		return
+	end
+
+	if Toggles.PlayerESPToggle.Value and IsPlayerAlive(Character) then
+		Abysall.ESPLibrary:AddESP({
+			Object = Character,
+			Text = Player.Name,
+			Color = Options.PlayerESPColor.Value
+		})
+	else
+		Abysall.ESPLibrary:RemoveESP(Character)
+	end
+end
+
+local function RemovePlayer(Player, Character)
+	if Character then
+		Abysall.ESPLibrary:RemoveESP(Character)
+
+		local Index = table.find(ObjectsPlayers, Character)
+		if Index then
+			table.remove(ObjectsPlayers, Index)
+		end
+	end
+end
+
+local function SetupPlayer(Player)
+	if Player == Players.LocalPlayer then
+		return
+	end
+
+	local function SetupCharacter(Character)
+		-- Удаляем ESP от предыдущего персонажа
+		RemovePlayer(Player, Character)
+
+		if table.find(ObjectsPlayers, Character) == nil then
+			table.insert(ObjectsPlayers, Character)
+		end
+
+		-- Energy может появиться не сразу
+		UpdatePlayerESP(Player, Character)
+
+		local Energy = Character:FindFirstChild("Energy")
+
+		if Energy then
+			UpdatePlayerESP(Player, Character)
+		end
+
+		-- Следим за появлением/удалением Energy и Ghost
+		local Connection = Character.ChildAdded:Connect(function(Object)
+			if Object.Name == "Energy" or Object.Name == "Ghost" then
+				UpdatePlayerESP(Player, Character)
+			end
+		end)
+
+		local RemovedConnection = Character.ChildRemoved:Connect(function(Object)
+			if Object.Name == "Energy" or Object.Name == "Ghost" then
+				UpdatePlayerESP(Player, Character)
+			end
+		end)
+
+		PlayerConnections[Player] = {
+			Character = Character,
+			Added = Connection,
+			Removed = RemovedConnection
+		}
+	end
+
+	if Player.Character then
+		SetupCharacter(Player.Character)
+	end
+
+	Player.CharacterAdded:Connect(SetupCharacter)
+end
+
+for _, Player in Players:GetPlayers() do
+	SetupPlayer(Player)
+end
+
+Players.PlayerAdded:Connect(SetupPlayer)
+
+Players.PlayerRemoving:Connect(function(Player)
+	local Connections = PlayerConnections[Player]
+
+	if Connections then
+		Connections.Added:Disconnect()
+		Connections.Removed:Disconnect()
+		PlayerConnections[Player] = nil
+	end
+
+	RemovePlayer(Player, Player.Character)
+end)
+
+Toggles.PlayerESPToggle:OnChanged(function()
+	for _, Character in ObjectsPlayers do
+		local Player = Players:GetPlayerFromCharacter(Character)
+
+		if Player then
+			UpdatePlayerESP(Player, Character)
+		end
+	end
+end)
+
+Options.PlayerESPColor:OnChanged(function(Value)
+	for _, Character in ObjectsPlayers do
+		Abysall.ESPLibrary:UpdateObjectColor(Character, Value)
 	end
 end)
 
