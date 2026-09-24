@@ -30,6 +30,26 @@ local Objects = {}
 local ObjectsPiggy = {}
 local ObjectsPlayers = {}
 local PlayerConnections = {}
+local ObjectsItems = {}
+local ItemsFolder = nil
+local ItemsFolderConnection = nil
+
+local ItemNames = {
+	Ammo = true,
+	BlueKey = true,
+	GreenGear = true,
+	GreenKey = true,
+	Gun = true,
+	Hammer = true,
+	KeyCode = true,
+	OrangeKey = true,
+	Plank = true,
+	PurpleKey = true,
+	RedGear = true,
+	RedKey = true,
+	Wrench = true,
+	YellowKey = true
+}
 
 local PiggyFolder = Workspace:WaitForChild("PiggyNPC")
 local Players = game:GetService("Players")
@@ -286,6 +306,16 @@ Groupboxes.Visuals_ESP_Toggles:AddToggle("PlayerESPToggle", {
 	Transparency = 0
 })
 
+Groupboxes.Visuals_ESP_Toggles:AddToggle("ItemESPToggle", {
+	Text = "Items",
+	Default = false,
+	Tooltip = "Highlights items."
+}):AddColorPicker("ItemESPColor", {
+	Text = "Items",
+	Default = Color3.fromRGB(255, 255, 0),
+	Transparency = 0
+})
+
 local function UpdatePiggyESP(Object)
 	if Toggles.PiggyESPToggle.Value then
 		Abysall.ESPLibrary:AddESP({
@@ -340,29 +370,44 @@ Options.PiggyESPColor:OnChanged(function(Value)
 	end
 end)
 
-local function IsPlayerAlive(Character)
-	return Character
-		and Character.Parent
-		and Character:FindFirstChild("Energy") ~= nil
-		and Character:FindFirstChild("Ghost") == nil
-end
-
 local function UpdatePlayerESP(Player, Character)
 	if not Character then
 		return
 	end
 
-	if Toggles.PlayerESPToggle.Value and IsPlayerAlive(Character) then
+	local IsPiggy = Character:FindFirstChild("Enemy") ~= nil
+	local IsAlive = Character:FindFirstChild("Energy") ~= nil
+		and Character:FindFirstChild("Ghost") == nil
+
+	-- Piggy
+	if IsPiggy then
+		Abysall.ESPLibrary:RemoveESP(Character)
+
+		if Toggles.PiggyESPToggle.Value then
+			Abysall.ESPLibrary:AddESP({
+				Object = Character,
+				Text = "Piggy",
+				Color = Options.PiggyESPColor.Value
+			})
+		end
+
+		return
+	end
+
+	-- Обычный живой игрок
+	if IsAlive and Toggles.PlayerESPToggle.Value then
+		Abysall.ESPLibrary:RemoveESP(Character)
+
 		Abysall.ESPLibrary:AddESP({
 			Object = Character,
 			Text = Player.Name,
 			Color = Options.PlayerESPColor.Value
 		})
 	else
+		-- Призрак / мёртвый / выключенный ESP
 		Abysall.ESPLibrary:RemoveESP(Character)
 	end
 end
-
 local function RemovePlayer(Player, Character)
 	if Character then
 		Abysall.ESPLibrary:RemoveESP(Character)
@@ -380,14 +425,12 @@ local function SetupPlayer(Player)
 	end
 
 	local function SetupCharacter(Character)
-		-- Удаляем ESP от предыдущего персонажа
 		RemovePlayer(Player, Character)
 
 		if table.find(ObjectsPlayers, Character) == nil then
 			table.insert(ObjectsPlayers, Character)
 		end
 
-		-- Energy может появиться не сразу
 		UpdatePlayerESP(Player, Character)
 
 		local Energy = Character:FindFirstChild("Energy")
@@ -396,15 +439,20 @@ local function SetupPlayer(Player)
 			UpdatePlayerESP(Player, Character)
 		end
 
-		-- Следим за появлением/удалением Energy и Ghost
 		local Connection = Character.ChildAdded:Connect(function(Object)
-			if Object.Name == "Energy" or Object.Name == "Ghost" then
+			if Object.Name == "Energy"
+				or Object.Name == "Ghost"
+				or Object.Name == "Enemy"
+			then
 				UpdatePlayerESP(Player, Character)
 			end
 		end)
 
 		local RemovedConnection = Character.ChildRemoved:Connect(function(Object)
-			if Object.Name == "Energy" or Object.Name == "Ghost" then
+			if Object.Name == "Energy"
+				or Object.Name == "Ghost"
+				or Object.Name == "Enemy"
+			then
 				UpdatePlayerESP(Player, Character)
 			end
 		end)
@@ -454,6 +502,130 @@ end)
 Options.PlayerESPColor:OnChanged(function(Value)
 	for _, Character in ObjectsPlayers do
 		Abysall.ESPLibrary:UpdateObjectColor(Character, Value)
+	end
+end)
+
+local function UpdateItemESP(Object)
+	if not Object or not Object.Parent then
+		return
+	end
+
+	if Toggles.ItemESPToggle.Value then
+		Abysall.ESPLibrary:AddESP({
+			Object = Object,
+			Text = Object.Name,
+			Color = Options.ItemESPColor.Value
+		})
+	else
+		Abysall.ESPLibrary:RemoveESP(Object)
+	end
+end
+
+local function AddItem(Object)
+	if not Object:IsA("BasePart") then
+		return
+	end
+
+	if not ItemNames[Object.Name] then
+		return
+	end
+
+	if table.find(ObjectsItems, Object) then
+		return
+	end
+
+	table.insert(ObjectsItems, Object)
+	UpdateItemESP(Object)
+end
+
+local function RemoveItem(Object)
+	local Index = table.find(ObjectsItems, Object)
+
+	if not Index then
+		return
+	end
+
+	Abysall.ESPLibrary:RemoveESP(Object)
+	table.remove(ObjectsItems, Index)
+end
+
+local function IsItemsFolder(Object)
+	if not Object:IsA("Folder") then
+		return false
+	end
+
+	if Object.Name:match("^-?%d+$") then
+		return true
+	end
+
+	for _, Child in Object:GetChildren() do
+		if Child:IsA("BasePart") and ItemNames[Child.Name] then
+			return true
+		end
+	end
+
+	return false
+end
+
+local function SetupItemsFolder(Folder)
+	if ItemsFolder == Folder then
+		return
+	end
+
+	if ItemsFolderConnection then
+		ItemsFolderConnection.Added:Disconnect()
+		ItemsFolderConnection.Removed:Disconnect()
+		ItemsFolderConnection = nil
+	end
+
+	for _, Object in ObjectsItems do
+		Abysall.ESPLibrary:RemoveESP(Object)
+	end
+
+	table.clear(ObjectsItems)
+
+	ItemsFolder = Folder
+
+	for _, Object in Folder:GetChildren() do
+		AddItem(Object)
+	end
+
+	local Added = Folder.ChildAdded:Connect(function(Object)
+		AddItem(Object)
+	end)
+
+	local Removed = Folder.ChildRemoved:Connect(function(Object)
+		RemoveItem(Object)
+	end)
+
+	ItemsFolderConnection = {
+		Added = Added,
+		Removed = Removed
+	}
+end
+
+for _, Object in Workspace:GetChildren() do
+	if IsItemsFolder(Object) then
+		SetupItemsFolder(Object)
+		break
+	end
+end
+
+Workspace.ChildAdded:Connect(function(Object)
+	if IsItemsFolder(Object) then
+		SetupItemsFolder(Object)
+	end
+end)
+
+Toggles.ItemESPToggle:OnChanged(function()
+	for _, Object in ObjectsItems do
+		UpdateItemESP(Object)
+	end
+end)
+
+Options.ItemESPColor:OnChanged(function(Value)
+	for _, Object in ObjectsItems do
+		Abysall.ESPLibrary:UpdateObjectColor(Object, Value)
 	end
 end)
 
