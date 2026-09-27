@@ -73,7 +73,7 @@ function NotificationLibrary:Notify(TitleText, Desc, Delay)
 		local Line = Instance.new("Frame")
 		local Warning = Instance.new("ImageLabel")
 		local UICorner = Instance.new("UICorner")
-		local UICorner2 = Instance.new("UICorner")
+        local UICorner2 = Instance.new("UICorner")
 		local Title = Instance.new("TextLabel")
 		local Description = Instance.new("TextLabel")
 
@@ -84,8 +84,8 @@ function NotificationLibrary:Notify(TitleText, Desc, Delay)
 		Notification.BorderSizePixel = 0
 		Notification.Position = UDim2.new(1, 5, 0, 60 + (60 * NotificationLibrary.LiveNotifications))
 		Notification.Size = UDim2.new(0, 420, 0, 50)
-		Notification:SetAttribute("ID", NotificationLibrary.Notifications)
-		Notification:SetAttribute("CurrentPosition", Notification.Position)
+        Notification:SetAttribute("ID", NotificationLibrary.Notifications)
+        Notification:SetAttribute("CurrentPosition", Notification.Position)
 
 		Line.Name = "Line"
 		Line.Parent = Notification
@@ -106,13 +106,13 @@ function NotificationLibrary:Notify(TitleText, Desc, Delay)
 		UICorner.CornerRadius = UDim.new(0, 20)
 		UICorner.Parent = Warning
 
-		UICorner2.CornerRadius = UDim.new(0, 4)
-		UICorner2.Parent = Notification
+        UICorner2.CornerRadius = UDim.new(0, 4)
+        UICorner2.Parent = Notification
 
 		Title.Name = "Title"
 		Title.Parent = Notification
 		Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		Title.BackgroundTransparency = 1
+		Title.BackgroundTransparency = 1.000
 		Title.Position = UDim2.new(0, 60, 0.155, 0)
 		Title.Size = UDim2.new(0, 205, 0, 15)
 		Title.Text = TitleText or "..."
@@ -124,132 +124,58 @@ function NotificationLibrary:Notify(TitleText, Desc, Delay)
 		Description.Name = "Description"
 		Description.Parent = Notification
 		Description.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		Description.BackgroundTransparency = 1
+		Description.BackgroundTransparency = 1.000
 		Description.Position = UDim2.new(0, 60, 0.483, 0)
 		Description.Size = UDim2.new(0, 205, 0, 18)
 		Description.Text = Desc or "..."
 		Description.TextColor3 = Library.Scheme.FontColor
-		Description.TextTransparency = 0.1
+        Description.TextTransparency = 0.1
 		Description.TextSize = 10
 		Description.TextStrokeTransparency = 0.75
 		Description.TextXAlignment = Enum.TextXAlignment.Left
-
-		NotificationLibrary.LiveNotifications += 1
-		NotificationLibrary.Notifications += 1
-
-		Services.TweenService:Create(
-			Notification,
-			TweenInfo.new(1, Enum.EasingStyle.Exponential),
-			{ Position = UDim2.new(1, -370, 0, Notification.Position.Y.Offset) }
-		):Play()
+		
+		NotificationLibrary.LiveNotifications = NotificationLibrary.LiveNotifications + 1
+        NotificationLibrary.Notifications = NotificationLibrary.Notifications + 1
+		Services.TweenService:Create(Notification, TweenInfo.new(1, Enum.EasingStyle.Exponential), {Position = UDim2.new(1, -370, 0, Notification.Position.Y.Offset)}):Play()
 
 		task.wait(0.25)
-		if typeof(Delay) == "Instance" then
-			Delay.Destroying:Wait()
-		else
-			Services.TweenService:Create(
-				Line,
-				TweenInfo.new(Delay - 0.25, Enum.EasingStyle.Linear),
-				{ Size = UDim2.new(0, 400, 0, 3) }
-			):Play()
-			task.wait(Delay - 0.25)
-		end
+		Services.TweenService:Create(Line, TweenInfo.new(Delay - 0.25, Enum.EasingStyle.Linear), {Size = UDim2.new(0, 400, 0, 3)}):Play()
+		task.wait(Delay - 0.25)
 
-		Notification:SetAttribute("Destroying", true)
-
-		Services.TweenService:Create(
-			Notification,
-			TweenInfo.new(0.75, Enum.EasingStyle.Exponential, Enum.EasingDirection.In),
-			{ Position = UDim2.new(1, 5, 0, Notification.Position.Y.Offset) }
-		):Play()
-
-		NotificationLibrary.LiveNotifications -= 1
-
-		local NotifId = Notification:GetAttribute("ID")
-		local NotifY = Notification:GetAttribute("CurrentPosition").Y.Offset
-
-		for _, Object in Container:GetChildren() do
-			if Object.Name == "Notification"
-				and Object:GetAttribute("ID")
-				and Object:GetAttribute("ID") > NotifId
-				and Object:GetAttribute("Destroying") ~= true
-				and Object.Position.Y.Offset ~= 60
-			then
-				local NewY = Object:GetAttribute("CurrentPosition").Y.Offset - 60
-				Object:SetAttribute("CurrentPosition", UDim2.new(1, -450, 0, NewY))
-				Services.TweenService:Create(
-					Object,
-					TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut),
-					{ Position = UDim2.new(1, -370, 0, NewY) }
-				):Play()
-			end
-		end
-
-		task.wait(0.75)
+        Notification:SetAttribute("Destroying", true)
+		Services.TweenService:Create(Notification, TweenInfo.new(0.75, Enum.EasingStyle.Exponential, Enum.EasingDirection.In), {Position = UDim2.new(1, 5, 0, Notification.Position.Y.Offset)}):Play()
+		NotificationLibrary.LiveNotifications = NotificationLibrary.LiveNotifications - 1
+        
+        for Index, Object in pairs(Container:GetChildren()) do
+            if Object.Name == "Notification" and Object:GetAttribute("ID") and Object:GetAttribute("ID") > Notification:GetAttribute("ID") and Object:GetAttribute("Destroying") ~= true and Object.Position.Y.Offset ~= 60 then
+                Object:SetAttribute("CurrentPosition", UDim2.new(1, -450, 0, Object:GetAttribute("CurrentPosition").Y.Offset - 60))
+                Services.TweenService:Create(Object, TweenInfo.new(1, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut), {Position = UDim2.new(1, -370, 0, Object:GetAttribute("CurrentPosition").Y.Offset)}):Play()
+            end
+        end
+        task.wait(0.75)
 		Notification:Destroy()
 	end)
 end
 
-Globals.STX = loadstring(game:HttpGet("https://raw.githubusercontent.com/ii5601/ii5601ware/refs/heads/main/Components/STX.luau"))()
 Functions.Notify = function(Settings)
-	local HiddenContainer = GetHiddenContainer()
+    local Container
+    if Functions.CheckCompatability({"gethui"}) then
+        Container = Abysall.Environment.gethui()
+    else
+        Container = Services.CoreGui
+    end
 
-	if not Settings.Body then
-		Settings.Body = "..."
-	end
+    local Sound = Instance.new("Sound", Container)
+    Sound.SoundId = "rbxassetid://8784885431"
+    Sound.Volume = 3
+    Sound.PlayOnRemove = true
+    Sound:Destroy()
 
-	if not Options.NotifyStyle or Options.NotifyStyle.Value == "Abysall" then
-		local Sound = Instance.new("Sound", HiddenContainer)
-		Sound.SoundId = "rbxassetid://8784885431"
-		Sound.Volume = (Toggles.NotifyPlaySound and Toggles.NotifyPlaySound.Value and Options.NotifySoundVolume.Value) or (Toggles.NotifyPlaySound and 0 or 3)
-		Sound.PlayOnRemove = true
-		Sound:Destroy()
-		NotificationLibrary:Notify(Settings.Title, Settings.Body, Settings.Time or 5)
-	elseif Options.NotifyStyle.Value == "Doors" then
-		local IsEntity = false
-		local EntityName = ""
-		for Index, Object in pairs(Entities) do
-			if Object.NotifyMessage.Title == Settings.Title or Object.NotifyMessage.Body == Settings.Body then
-				IsEntity = true
-				EntityName = Index
-			end
-		end
-		Globals.DoorsNotify({
-			Title = "Abysall Hub",
-			Description = Settings.Title,
-			Reason = Settings.Body,
-			Style = IsEntity and "WARNING" or "NOTIFICATION",
-			Color = IsEntity and Color3.fromRGB(255, 0, 0) or Color3.fromRGB(255, 222, 189),
-			Image = Settings.Image,
-			Time = Settings.Time
-		})
-	elseif Options.NotifyStyle.Value == "STX" then
-		local Sound = Instance.new("Sound", HiddenContainer)
-		Sound.SoundId = "rbxassetid://4590657391"
-		Sound.Volume = (Toggles.NotifyPlaySound and Toggles.NotifyPlaySound.Value and Options.NotifySoundVolume.Value) or (Toggles.NotifyPlaySound and 0 or 3)
-		Sound.PlayOnRemove = true
-		Sound:Destroy()
+    NotificationLibrary:Notify(Settings.Title, Settings.Body, Settings.Time or 5)
+end
 
-		if Settings.Image then
-			Globals.STX:Notify(
-				{Title = "Abysall Hub", Description = Settings.Title .. "\n" .. Settings.Body},
-				{OutlineColor = Library.Scheme.AccentColor,Time = Settings.Time or 5, Type = "image"},
-				{Image = Settings.Image, ImageColor = Color3.fromRGB(255, 255, 255)}
-			)
-		else
-			Globals.STX:Notify(
-				{Title = "Abysall Hub", Description = Settings.Title .. "\n" .. Settings.Body},
-				{OutlineColor = Library.Scheme.AccentColor,Time = Settings.Time or 5, Type = "default"}
-			)
-		end
-	else
-		local Sound = Instance.new("Sound", HiddenContainer)
-		Sound.SoundId = "rbxassetid://4590662766"
-		Sound.Volume = (Toggles.NotifyPlaySound and Toggles.NotifyPlaySound.Value and Options.NotifySoundVolume.Value) or (Toggles.NotifyPlaySound and 0 or 3)
-		Sound.PlayOnRemove = true
-		Sound:Destroy()
-		Library:OldNotify({ Title = Settings.Title, Description = Settings.Body, Time = Settings.Time })
-	end
+Library.Notify = function(Data, Body, Time)
+    Functions.Notify({Title = Body, Time = Time or 5})
 end
 
 local Window = Library:CreateWindow({
