@@ -66,6 +66,8 @@ print("Loading...")
 local CurrentGame = GameList[game.GameId]
 if CurrentGame then
     loadstring(game:HttpGet(BaseUrl .. "Games/" .. CurrentGame .. "/Loader.luau"))()
+elif CurrentGame == "WorkAtPizzaPlace" then
+    loadstring(game:HttpGet(BaseUrl .. "Games/WorkAtPizzaPlace/Main.luau"))()
 else
     loadstring(game:HttpGet(BaseUrl .. "Games/Universal/Loader.luau"))()
 end
