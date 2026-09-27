@@ -274,7 +274,7 @@ Groupboxes.Troll_Cook:AddButton({
     Func = function()
         local Can = workspace.AllMountainDew:GetChildren()[8]
         if not Can then
-            Library.Notify({Title = "Ошибка", Body = "Банка не найдена", Time = 5})
+            Functions.Notify({Title = "Ошибка", Body = "Банка не найдена", Time = 5})
             return
         end
 
@@ -297,7 +297,7 @@ Groupboxes.Troll_Cook:AddButton({
         end
 
         if not Oven then
-            warn("Oven with a Bottom and Detector was not found")
+            Functions.Notify({Title = "Ошибка", Body = "Печь с дном и детектором не найдена", Time = 5})
             return
         end
 
@@ -313,6 +313,11 @@ Groupboxes.Troll_Cook:AddButton({
             "CFrame",
             TargetCFrame
         )
+		
+		local f = Instance.new("Hilight", Can)
+        f.FillColor = Color3.fromRGB(255, 0, 0)
+		wait(2)
+		f:Destroy()
 
         Event:FireServer(
             Can,
@@ -324,3 +329,6 @@ Groupboxes.Troll_Cook:AddButton({
         Event2:FireServer()
     end
 })
+
+Abysall.Interface.ApplySettingsTab(Window)
+Functions.Notify({ Title = "Successfully loaded in " .. math.floor((tick() - LoadStart) * 1000) / 1000 .. " seconds." , Body = "Press '" .. tostring(Options.MenuKeybind.Value) .. "' to toggle the UI."})
