@@ -8,7 +8,7 @@ getgenv().Abysall = {
 local GameList = {
   [2440500124] = "Doors",
   [1516533665] = "Piggy",
-  [192800] = "WorkAtPizzaPlace"
+  [47545] = "WorkAtPizzaPlace"
 }
 
 local BaseUrl = "https://raw.githubusercontent.com/ii5601/ii5601ware/refs/heads/main/"
