@@ -265,27 +265,57 @@ Options.ESPArrowsRadius:OnChanged(function(V)    Abysall.ESPLibrary:SetArrowRadi
 Groupboxes.Troll_Cook = Tab.Troll:AddTab("Повар")
 Groupboxes.Troll_Cook:AddButton({
     Text = "Сделать прикол с банкой",
-    Tooltip = "Делаем \"Квадробика уху\""
+    Tooltip = "Сделать \"Квадробика уху\"",
     Func = function()
+        local Can = workspace.AllMountainDew:GetChildren()[8]
+        if not Can then
+            Library.Notify({Title = "Ошибка", Body = "Банка не найдена", Time = 5})
+            return
+        end
+
+        local Oven, OvenBottom
+        local ClosestDistance = math.huge
+        for _, Candidate in ipairs(workspace.Ovens:GetChildren()) do
+            local Bottom = Candidate:FindFirstChild("Bottom")
+            local Door = Candidate:FindFirstChild("Door")
+            local ClickDetector = Door and Door:FindFirstChild("ClickDetector")
+            local Detector = ClickDetector and ClickDetector:FindFirstChild("Detector")
+
+            if Bottom and Detector then
+                local Distance = (Bottom.Position - Can.Position).Magnitude
+                if Distance < ClosestDistance then
+                    Oven = Candidate
+                    OvenBottom = Bottom
+                    ClosestDistance = Distance
+                end
+            end
+        end
+
+        if not Oven then
+            warn("Oven with a Bottom and Detector was not found")
+            return
+        end
+
+        local TargetCFrame = OvenBottom.CFrame * CFrame.new(-2, 1.5, 0)
         local Event1 = workspace.GameService.DraggingStarted
         Event1:FireServer(
-            workspace.AllMountainDew:GetChildren()[8]
+            Can
         )
 
         local Event = game:GetService("ReplicatedStorage").Communication.Events:GetChildren()[43]
         Event:FireServer(
-            workspace.AllMountainDew:GetChildren()[8],
+            Can,
             "CFrame",
-            CFrame.new(57.600059509277344, 2.9545590877532959, 54.499824523925781, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+            TargetCFrame
         )
 
         Event:FireServer(
-            workspace.AllMountainDew:GetChildren()[8],
+            Can,
             "Anchored",
             false
         )
 
-        local Event2 = workspace.Ovens.Oven.Door.ClickDetector.Detector
+        local Event2 = Oven.Door.ClickDetector.Detector
         Event2:FireServer()
     end
 })
