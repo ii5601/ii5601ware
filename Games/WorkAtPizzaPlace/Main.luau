@@ -262,7 +262,12 @@ Options.ESPTracerThickness:OnChanged(function(V) Abysall.ESPLibrary:SetTracerSiz
 Toggles.ESPArrowsToggle:OnChanged(function(V)    Abysall.ESPLibrary:SetArrows(V) end)
 Options.ESPArrowsRadius:OnChanged(function(V)    Abysall.ESPLibrary:SetArrowRadius(V) end)
 
-Groupboxes.Troll_Cook = Tab.Troll:AddTab("Повар")
+Groupboxes.Troll_Cook = Tab.Troll:AddGroupbox({
+    Side = "Right", -- case-insensitive
+    Name = "Повар",
+    Description = "Приколы за повара",
+    IconName = "chef-hat"
+})
 Groupboxes.Troll_Cook:AddButton({
     Text = "Сделать прикол с банкой",
     Tooltip = "Сделать \"Квадробика уху\"",
