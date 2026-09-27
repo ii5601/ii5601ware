@@ -37,39 +37,6 @@ return function(Window)
 			Library.ShowCustomCursor = Value
 		end,
 	})
-
-	MenuGroup:AddDropdown("UILibrary", {
-		Text = "UI Style",
-		Values = {
-			"Obsidian",
-			"Linoria"
-		},
-		Default = (Abysall.UILibrary == "Linoria" and 2 or 1),
-		Callback = function(Value)
-			if Abysall.Environment.writefile and Abysall.Environment.readfile then
-				if not Abysall.Environment.isfile("Abysall/UserData.json") then
-					local Data = {
-						TotalExecutions = 0,
-						UILibrary = "Obsidian"
-					}
-					Abysall.Environment.writefile("Abysall/UserData.json", Services.HttpService:JSONEncode(Data))
-				end
-
-				local UserData = Abysall.Environment.readfile("Abysall/UserData.json")
-				local Decoded = Services.HttpService:JSONDecode(UserData)
-				Decoded.UILibrary = Value
-
-				if not Decoded.UILibrary then
-					Decoded.UILibrary = "Obsidian"
-				end
-
-				Abysall.TotalExecutions = Decoded.TotalExecutions
-				Abysall.UILibrary = Decoded.UILibrary
-
-				Abysall.Environment.writefile("Abysall/UserData.json", Services.HttpService:JSONEncode(Decoded))
-			end
-		end
-	})
 	
 	MenuGroup:AddDropdown("DPIDropdown", {
 		Values = { "50%", "75%", "100%", "125%", "150%", "175%", "200%" },
@@ -87,9 +54,8 @@ return function(Window)
 	MenuGroup:AddDivider()
 	MenuGroup:AddLabel("Menu bind"):AddKeyPicker("MenuKeybind", { Default = "RightShift", NoUI = true, Text = "Menu keybind" })
 	
-	MenuGroup:AddButton("Copy Discord Invite", function()
-		toclipboard("https://dsc.gg/abysallhub")
-		Library:Notify("Discord invite copied.")
+	MenuGroup:AddButton("Rejoin Server", function()
+		game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, game.JobId, game:GetService("Players").LocalPlayer)
 	end)
 	
 	MenuGroup:AddButton("Unload", function()
