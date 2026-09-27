@@ -307,8 +307,16 @@ Groupboxes.Troll_Cook:AddButton({
             Can
         )
 
-        local Event = game:GetService("ReplicatedStorage").Communication.Events:GetChildren()[43]
-        Event:FireServer(
+        local Network = require(game:GetService("ReplicatedStorage").LibraryFolder.Network)
+        Network:FireServer(
+            "UpdateProperty",
+            Can,
+            "Anchored",
+            true
+        )
+
+        Network:FireServer(
+            "UpdateProperty",
             Can,
             "CFrame",
             TargetCFrame
@@ -319,7 +327,8 @@ Groupboxes.Troll_Cook:AddButton({
 		wait(2)
 		f:Destroy()
 
-        Event:FireServer(
+        Network:FireServer(
+            "UpdateProperty",
             Can,
             "Anchored",
             false
