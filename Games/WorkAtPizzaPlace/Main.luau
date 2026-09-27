@@ -1,3 +1,5 @@
+print("WorkAtPizzaPlace Main")
+
 local LoadStart = tick()
 Abysall.SavePath = "WorkAtPizzaPlace"
 
