@@ -313,8 +313,8 @@ Groupboxes.Troll_Cook:AddButton({
             "CFrame",
             TargetCFrame
         )
-		
-		local f = Instance.new("Hilight", Can)
+
+		local f = Instance.new("Highlight", Can)
         f.FillColor = Color3.fromRGB(255, 0, 0)
 		wait(2)
 		f:Destroy()
