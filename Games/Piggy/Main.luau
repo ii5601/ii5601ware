@@ -37,6 +37,7 @@ local ItemsFolderConnection = nil
 local ItemNames = {
 	Ammo = true,
 	BlueKey = true,
+	Battery = true,
 	GreenGear = true,
 	GreenKey = true,
 	Gun = true,
@@ -48,7 +49,8 @@ local ItemNames = {
 	RedGear = true,
 	RedKey = true,
 	Wrench = true,
-	YellowKey = true
+	YellowKey = true,
+	WhiteKey = true
 }
 
 local PiggyFolder = Workspace:WaitForChild("PiggyNPC")

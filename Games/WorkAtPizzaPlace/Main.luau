@@ -339,5 +339,53 @@ Groupboxes.Troll_Cook:AddButton({
     end
 })
 
+local BoxRainRunning = false
+Groupboxes.Troll_Cook:AddButton({
+    Text = "Дождь из коробок поставщика",
+    Tooltip = "Локальный эффект: 24 коробки поставщика, удаляются через 10 секунд.",
+    Func = function()
+        if BoxRainRunning then
+            return
+        end
+
+        local Character = LocalPlayer.Character
+        local Root = Character and Character:FindFirstChild("HumanoidRootPart")
+        local Template = Services.ReplicatedStorage:WaitForChild("Supplies"):FindFirstChild("SupplyBox")
+        if not Root or not Template then
+            Functions.Notify({Title = "Ошибка", Body = "Не найден персонаж или шаблон коробки", Time = 5})
+            return
+        end
+
+        BoxRainRunning = true
+        local StartedAt = tick()
+        local RainFolder = Instance.new("Folder")
+        RainFolder.Name = "LocalBoxRain"
+        RainFolder.Parent = Services.Workspace
+
+        task.spawn(function()
+            for Index = 1, 24 do
+                if not Root.Parent or not RainFolder.Parent then
+                    break
+                end
+
+                local Box = Template:Clone()
+                Box.Anchored = false
+                Box.CanCollide = false
+                Box.CanTouch = false
+                Box.CanQuery = false
+                Box.CFrame = CFrame.new(
+                    Root.Position + Vector3.new(math.random(-10, 10), 18 + Index % 5 * 2, math.random(-10, 10))
+                ) * CFrame.Angles(0, math.rad(math.random(0, 360)), math.rad(math.random(-20, 20)))
+                Box.Parent = RainFolder
+                task.wait(0.12)
+            end
+
+            task.wait(math.max(0, 10 - (tick() - StartedAt)))
+            RainFolder:Destroy()
+            BoxRainRunning = false
+        end)
+    end
+})
+
 Abysall.Interface.ApplySettingsTab(Window)
 Functions.Notify({ Title = "Successfully loaded in " .. math.floor((tick() - LoadStart) * 1000) / 1000 .. " seconds." , Body = "Press '" .. tostring(Options.MenuKeybind.Value) .. "' to toggle the UI."})

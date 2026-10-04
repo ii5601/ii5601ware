@@ -8,7 +8,8 @@ getgenv().Abysall = {
 local GameList = {
   [2440500124] = "Doors",
   [1516533665] = "Piggy",
-  [47545] = "WorkAtPizzaPlace"
+  [47545] = "WorkAtPizzaPlace",
+  [65241] = "NDS"
 }
 
 local BaseUrl = "https://raw.githubusercontent.com/ii5601/ii5601ware/refs/heads/main/"
@@ -66,8 +67,10 @@ print("Loading...")
 local CurrentGame = GameList[game.GameId]
 if CurrentGame then
     loadstring(game:HttpGet(BaseUrl .. "Games/" .. CurrentGame .. "/Loader.luau"))()
-elif CurrentGame == "WorkAtPizzaPlace" then
+elseif CurrentGame == "WorkAtPizzaPlace" then
     loadstring(game:HttpGet(BaseUrl .. "Games/WorkAtPizzaPlace/Main.luau"))()
+elseif CurrentGame == "NDS" then
+    loadstring(game:HttpGet(BaseUrl .. "Games/NDS/Main.luau"))()
 else
     loadstring(game:HttpGet(BaseUrl .. "Games/Universal/Loader.luau"))()
 end
