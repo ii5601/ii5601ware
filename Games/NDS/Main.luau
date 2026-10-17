@@ -263,7 +263,7 @@ Groupboxes.General:AddToggle("AntiFling", {
 
 
 
-
+--[[
 local Dialog
 Dialog = Window:AddDialog("DialogueIdx", {
     Title = "Key System",
@@ -323,3 +323,4 @@ Dialog:AddInput("KeyInput", {
     Text = "Type key here:",
     Callback = function(value) key = value end
 })
+]]
