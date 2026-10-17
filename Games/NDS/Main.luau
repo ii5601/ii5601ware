@@ -199,7 +199,7 @@ local Tabs = {
     Teleport = Window:AddTab("Teleport", "map")
 }
 
-Groupboxes.General          = Tabs.Visuals:AddGroupbox({
+Groupboxes.General          = Tabs.General:AddGroupbox({
     Side = "Right",
     Name = "Player",
     Description = "Some player modification",
@@ -274,17 +274,24 @@ Dialog = Window:AddDialog("DialogueIdx", {
         SubmitKey = {
             Title = "Submit key",
             Variant = "Primary",
-            Order = 2,
+            Order = 1,
             Callback = function()
-                local result = Junkie.check_key(key)
-  				if result and result.valid then
+                local ok, result = pcall(Junkie.check_key, key)
+  				if ok and result.valid then
         			Functions.Notify({
 		    	        Title = "Thanks you!",
         			    Body = "Your key has been redeemed! Thank you for completing the key system.",
     	    		    Time = 5
 			        })
 					Dialog:Dismiss()
-			    else
+			    elseif not ok then
+        			Functions.Notify({
+		    	        Title = "Error.",
+        			    Body = "Probaly JNKIE problem, skipping key system.",
+    	    		    Time = 5
+			        })
+					Dialog:Dismiss()
+				else
 			        print("Invalid Key")
 			    end
             end
@@ -292,7 +299,7 @@ Dialog = Window:AddDialog("DialogueIdx", {
         Cancel = {
             Title = "Cancel",
             Variant = "Destructive",
-            Order = 1,
+            Order = 2,
             Callback = function()
                 Library:Unload()
             end
