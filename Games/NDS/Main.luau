@@ -1,16 +1,16 @@
 local LoadStart = tick()
-Abysall.SavePath = "NDS"
+ii5601ware.SavePath = "NDS"
 
-local Library = Abysall.Interface.Library
-local SaveManager = Abysall.Interface.SaveManager
-local ThemeManager = Abysall.Interface.ThemeManager
+local Library = ii5601ware.Interface.Library
+local SaveManager = ii5601ware.Interface.SaveManager
+local ThemeManager = ii5601ware.Interface.ThemeManager
 
 local Toggles = Library.Toggles
 local Options = Library.Options
 
 local function CloneReference(Object)
-	if Abysall and Abysall.Environment.cloneref then
-		return Abysall.Environment.cloneref(Object)
+	if ii5601ware and ii5601ware.Environment.cloneref then
+		return ii5601ware.Environment.cloneref(Object)
 	end
 	return Object
 end
@@ -32,7 +32,7 @@ Globals.IncompatibleMessage = "Your executor doesn't support this feature."
 
 Functions.CheckCompatability = function(Array)
 	for _, Name in Array do
-		if not Abysall.Environment[Name] then
+		if not ii5601ware.Environment[Name] then
 			return false
 		end
 	end
@@ -43,7 +43,7 @@ local LocalPlayer = Services.Players.LocalPlayer
 
 local function GetHiddenContainer()
 	if Functions.CheckCompatability({"gethui"}) then
-		return Abysall.Environment.gethui()
+		return ii5601ware.Environment.gethui()
 	end
 	return Services.CoreGui
 end
@@ -54,7 +54,7 @@ local NotificationLibrary = {
 }
 
 local Container = Instance.new("ScreenGui")
-Container.Name = Abysall.ESPLibrary:GenerateRandomString()
+Container.Name = ii5601ware.ESPLibrary:GenerateRandomString()
 Container.Parent = GetHiddenContainer()
 Container.DisplayOrder = 32767
 Container.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -160,7 +160,7 @@ end
 Functions.Notify = function(Settings)
     local Container
     if Functions.CheckCompatability({"gethui"}) then
-        Container = Abysall.Environment.gethui()
+        Container = ii5601ware.Environment.gethui()
     else
         Container = Services.CoreGui
     end
@@ -180,7 +180,7 @@ end
 
 local Window = Library:CreateWindow({
     Title = "ii5601ware",
-    Footer = "vBeta | [key type]",
+    Footer = "vBeta | [key type] | NDS",
     NotifySide = "Right",
     ShowCustomCursor = false,
     AutoShow = true,
@@ -190,7 +190,7 @@ local Window = Library:CreateWindow({
     CornerRadius = 2,
 })
 
-Abysall.Interface.ApplyInfoTab(Window)
+ii5601ware.Interface.ApplyInfoTab(Window)
 local Tabs = {
     General = Window:AddTab("General", "house"),
     Visuals = Window:AddTab("Visuals", "eye"),
@@ -235,9 +235,9 @@ Groupboxes.General:AddToggle("AntiFallDamege", {
 	Deufalt = false,
 	Callback = function(Value)
 		if Value then
-			Workspace:WaitForChild(LocalPlayer.Name):WaitForChild("FallDamageScript").Enable = Value
+			Workspace:WaitForChild(LocalPlayer.Name):WaitForChild("FallDamageScript").Enabled = Value
 		else
-			Workspace:WaitForChild(LocalPlayer.Name):WaitForChild("FallDamageScript").Disable = Value
+			Workspace:WaitForChild(LocalPlayer.Name):WaitForChild("FallDamageScript").Disabled = Value
 		end
 	end
 })

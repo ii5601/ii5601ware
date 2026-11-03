@@ -1,7 +1,7 @@
-if Abysall then
+if ii5601ware then
     return 
 end
-getgenv().Abysall = {
+getgenv().ii5601ware = {
     Legit = true
 }
 
@@ -9,11 +9,12 @@ local GameList = {
   [2440500124] = "Doors",
   [1516533665] = "Piggy",
   [47545] = "WorkAtPizzaPlace",
-  [65241] = "NDS"
+  [65241] = "NDS",
+  [mm2idhere] = "MM2"
 }
 
 local BaseUrl = "https://raw.githubusercontent.com/ii5601/ii5601ware/refs/heads/main/"
-getgenv().Abysall = {
+getgenv().ii5601ware = {
     Environment = loadstring(game:HttpGet(BaseUrl .. "Components/Environment.luau"))(),
     ESPLibrary = loadstring(game:HttpGet(BaseUrl .. "Components/ESP.luau"))(),
 
@@ -21,8 +22,8 @@ getgenv().Abysall = {
 }
 
 local function CloneReference(Object)
-    if Abysall and Abysall.Environment.cloneref then
-        return Abysall.Environment.cloneref(Object)
+    if ii5601ware and ii5601ware.Environment.cloneref then
+        return ii5601ware.Environment.cloneref(Object)
     else
         return Object
     end
@@ -34,16 +35,15 @@ local Services = setmetatable({}, {
     end
 })
 
-if Abysall.Environment.writefile and Abysall.Environment.readfile then
-    if not Abysall.Environment.isfile("Abysall/UserData.json") then
+if ii5601ware.Environment.writefile and ii5601ware.Environment.readfile then
+    if not ii5601ware.Environment.isfile("ii5601ware/UserData.json") then
         local Data = {
-            TotalExecutions = 0,
-            UILibrary = "Obsidian"
+            TotalExecutions = 0
         }
-        Abysall.Environment.writefile("Abysall/UserData.json", Services.HttpService:JSONEncode(Data))
+        ii5601ware.Environment.writefile("ii5601ware/UserData.json", Services.HttpService:JSONEncode(Data))
     end
 
-    local UserData = Abysall.Environment.readfile("Abysall/UserData.json")
+    local UserData = ii5601ware.Environment.readfile("ii5601ware/UserData.json")
     local Decoded = Services.HttpService:JSONDecode(UserData)
     if not Decoded.TotalExecutions then
         Decoded.TotalExecutions = 0    
@@ -51,17 +51,12 @@ if Abysall.Environment.writefile and Abysall.Environment.readfile then
 
     Decoded.TotalExecutions = Decoded.TotalExecutions + 1
 
-    if not Decoded.UILibrary then
-        Decoded.UILibrary = "Obsidian"
-    end
+    ii5601ware.TotalExecutions = Decoded.TotalExecutions
 
-    Abysall.TotalExecutions = Decoded.TotalExecutions
-    Abysall.UILibrary = Decoded.UILibrary
-
-    Abysall.Environment.writefile("Abysall/UserData.json", Services.HttpService:JSONEncode(Decoded))
+    ii5601ware.Environment.writefile("ii5601ware/UserData.json", Services.HttpService:JSONEncode(Decoded))
 end
 
-Abysall.Interface = loadstring(game:HttpGet(BaseUrl .. "Components/Interface.luau"))()
+ii5601ware.Interface = loadstring(game:HttpGet(BaseUrl .. "Components/Interface.luau"))()
 
 print("Loading...")
 local CurrentGame = GameList[game.GameId]

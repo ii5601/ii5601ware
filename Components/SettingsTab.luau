@@ -1,7 +1,7 @@
 return function(Window)
 	local function CloneReference(Object)
-		if Abysall and Abysall.Environment.cloneref then
-			return Abysall.Environment.cloneref(Object)
+		if ii5601ware and ii5601ware.Environment.cloneref then
+			return ii5601ware.Environment.cloneref(Object)
 		else
 			return Object
 		end
@@ -13,9 +13,9 @@ return function(Window)
 		end
 	})
 
-	local Library = Abysall.Interface.Library
-	local SaveManager = Abysall.Interface.SaveManager
-	local ThemeManager = Abysall.Interface.ThemeManager
+	local Library = ii5601ware.Interface.Library
+	local SaveManager = ii5601ware.Interface.SaveManager
+	local ThemeManager = ii5601ware.Interface.ThemeManager
 	
 	local Toggles = Library.Toggles
 	local Options = Library.Options
@@ -58,6 +58,10 @@ return function(Window)
 		game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, game.JobId, game:GetService("Players").LocalPlayer)
 	end)
 	
+	MenuGroup:AddButton("Copy Discord Link", function()
+		setclipboard("https://discord.gg/WBdRuUmkmr")
+	end)
+
 	MenuGroup:AddButton("Unload", function()
 		Library:Unload()
 	end)
@@ -68,8 +72,8 @@ return function(Window)
 	SaveManager:SetLibrary(Library)
 	SaveManager:IgnoreThemeSettings()
 	SaveManager:SetIgnoreIndexes({"UILibrary"})
-	ThemeManager:SetFolder("Abysall")
-	SaveManager:SetFolder("Abysall/" .. Abysall.SavePath)
+	ThemeManager:SetFolder("ii5601ware")
+	SaveManager:SetFolder("ii5601ware/" .. ii5601ware.SavePath)
 	SaveManager:BuildConfigSection(SettingsTab)
 	ThemeManager:ApplyToTab(SettingsTab)
 	SaveManager:LoadAutoloadConfig()
