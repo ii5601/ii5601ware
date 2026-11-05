@@ -20,8 +20,11 @@ end
 
 Services.StarterGui:SetCore("SendNotification", {
     Title = "ii5601ware",
-    Text = "Only DOORS, Piggy, and Work At Pizza Place, NDS and MM2 are supported right now, sorry :)",
+    Text = "for dev",
     Duration = 10,
     Button1 = "Copy PlaceId",
     Callback = Bindable,
 })
+
+ii5601ware.Loading:ChangeDescription("Only DOORS, Piggy, and Work At Pizza Place, NDS and MM2 are supported right now, sorry :)")
+ii5601ware.Loading:ChangeStep(3)

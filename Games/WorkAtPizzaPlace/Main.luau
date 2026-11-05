@@ -1,4 +1,5 @@
-print("WorkAtPizzaPlace Main")
+ii5601ware.Loading:ChangeDescription("Loading Work At Pizza Place...")
+ii5601ware.Loading:ChangeStep(2)
 
 local LoadStart = tick()
 ii5601ware.SavePath = "WorkAtPizzaPlace"
@@ -388,4 +389,7 @@ Groupboxes.Troll_Cook:AddButton({
 })
 
 ii5601ware.Interface.ApplySettingsTab(Window)
-Functions.Notify({ Title = "Successfully loaded in " .. math.floor((tick() - LoadStart) * 1000) / 1000 .. " seconds." , Body = "Press '" .. tostring(Options.MenuKeybind.Value) .. "' to toggle the UI."})
+
+ii5601ware.Loading:ChangeStep(3)
+ii5601ware.Loading:ChangeDescription("Done!\nSuccessfully loaded in " .. math.floor((tick() - LoadStart) * 1000) / 1000 .. " seconds.\nPress '" .. tostring(Options.MenuKeybind.Value) .. "' to toggle the UI.")
+ii5601ware.Loading:Destroy()

@@ -1,3 +1,6 @@
+ii5601ware.Loading:ChangeDescription("Loading NDS...")
+ii5601ware.Loading:ChangeStep(2)
+
 local LoadStart = tick()
 ii5601ware.SavePath = "NDS"
 
@@ -324,3 +327,8 @@ Dialog:AddInput("KeyInput", {
     Callback = function(value) key = value end
 })
 ]]
+
+
+ii5601ware.Loading:ChangeStep(3)
+ii5601ware.Loading:ChangeDescription("Done!\nSuccessfully loaded in " .. math.floor((tick() - LoadStart) * 1000) / 1000 .. " seconds.\nPress '" .. tostring(Options.MenuKeybind.Value) .. "' to toggle the UI.")
+ii5601ware.Loading:Destroy()

@@ -1,3 +1,5 @@
+ii5601ware.Loading:ChangeDescription("Loading MM2...")
+ii5601ware.Loading:ChangeStep(2)
 local LoadStart = tick()
 ii5601ware.SavePath = "MM2"
 
@@ -1044,3 +1046,7 @@ local connections, originalConnect = {}, context.connect
 local _, stopTradeValues = TradeValues.install({environment = environment, section = Groupboxes.Trades, configuration = settings,
 		player = LocalPlayer, storage = game:GetService("ReplicatedStorage"), http = game:GetService("HttpService"),
 		runService = game:GetService("RunService"), connect = connect, isAlive = function() return not window.Destroyed end})
+
+ii5601ware.Loading:ChangeStep(3)
+ii5601ware.Loading:ChangeDescription("Done!\nSuccessfully loaded in " .. math.floor((tick() - LoadStart) * 1000) / 1000 .. " seconds.\nPress '" .. tostring(Options.MenuKeybind.Value) .. "' to toggle the UI.")
+ii5601ware.Loading:Destroy()

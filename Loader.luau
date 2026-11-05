@@ -57,8 +57,16 @@ if ii5601ware.Environment.writefile and ii5601ware.Environment.readfile then
 end
 
 ii5601ware.Interface = loadstring(game:HttpGet(BaseUrl .. "Components/Interface.luau"))()
+Library = ii5601ware.Interface.Library
 
-print("Loading...")
+ii5601ware.Loading = Library:Notify({
+    Title = "ii5601ware",
+    Description = "Script is loading, please wait...",
+    Steps = 3,
+})
+
+ii5601ware.Loading:ChangeStep(1)
+
 local CurrentGame = GameList[game.GameId]
 if CurrentGame then
     loadstring(game:HttpGet(BaseUrl .. "Games/" .. CurrentGame .. "/Loader.luau"))()
@@ -66,6 +74,8 @@ elseif CurrentGame == "WorkAtPizzaPlace" then
     loadstring(game:HttpGet(BaseUrl .. "Games/WorkAtPizzaPlace/Main.luau"))()
 elseif CurrentGame == "NDS" then
     loadstring(game:HttpGet(BaseUrl .. "Games/NDS/Main.luau"))()
+elseif CurrentGame == "MM2" then
+    loadstring(game:HttpGet(BaseUrl .. "Games/MM2/Main.luau"))()
 else
     loadstring(game:HttpGet(BaseUrl .. "Games/Universal/Loader.luau"))()
 end
