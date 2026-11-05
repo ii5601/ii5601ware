@@ -8,9 +8,9 @@ getgenv().ii5601ware = {
 local GameList = {
   [2440500124] = "Doors",
   [1516533665] = "Piggy",
-  [47545] = "WorkAtPizzaPlace",
+  [66654135] = "MM2",
   [65241] = "NDS",
-  [mm2idhere] = "MM2"
+  [47545] = "WorkAtPizzaPlace"
 }
 
 local BaseUrl = "https://raw.githubusercontent.com/ii5601/ii5601ware/refs/heads/main/"
