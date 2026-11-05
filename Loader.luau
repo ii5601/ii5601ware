@@ -62,6 +62,7 @@ Library = ii5601ware.Interface.Library
 ii5601ware.Loading = Library:Notify({
     Title = "ii5601ware",
     Description = "Script is loading, please wait...",
+    Persist = true,
     Steps = 3,
 })
 
