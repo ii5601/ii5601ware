@@ -1,6 +1,6 @@
 ii5601ware.Loading:ChangeDescription("Loading MM2...")
 ii5601ware.Loading:ChangeStep(2)
-local LoadStart = tick()
+local LoadStart = os.clock()
 ii5601ware.SavePath = "MM2"
 
 local Library = ii5601ware.Interface.Library
@@ -1048,5 +1048,5 @@ local _, stopTradeValues = TradeValues.install({environment = environment, secti
 		runService = game:GetService("RunService"), connect = connect, isAlive = function() return not window.Destroyed end})
 
 ii5601ware.Loading:ChangeStep(3)
-ii5601ware.Loading:ChangeDescription("Done!\nSuccessfully loaded in " .. math.floor((tick() - LoadStart) * 1000) / 1000 .. " seconds.\nPress '" .. tostring(Options.MenuKeybind.Value) .. "' to toggle the UI.")
+ii5601ware.Loading:ChangeDescription("Done!\nSuccessfully loaded in " .. math.floor((os.clock() - LoadStart) * 1000) / 1000 .. " seconds.\nPress '" .. tostring(Options.MenuKeybind.Value) .. "' to toggle the UI.")
 ii5601ware.Loading:Destroy()

@@ -76,7 +76,9 @@ elseif CurrentGame == "WorkAtPizzaPlace" then
 elseif CurrentGame == "NDS" then
     loadstring(game:HttpGet(BaseUrl .. "Games/NDS/Main.luau"))()
 elseif CurrentGame == "MM2" then
-    loadstring(game:HttpGet(BaseUrl .. "Games/MM2/Main.luau"))()
+    if game.PlaceId == 142823291 then
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/ii5601/ii5601ware/refs/heads/main/Games/MM2/Main.luau"))()
+    end
 else
     loadstring(game:HttpGet(BaseUrl .. "Games/Universal/Loader.luau"))()
 end
